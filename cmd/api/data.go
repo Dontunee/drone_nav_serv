@@ -1,8 +1,8 @@
 package main
 
 import (
-	"drone_nav_serv/cmd/internal/data"
 	"encoding/json"
+	"github.com/dontunee/drone_nav_serv/cmd/internal/data"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 )
