@@ -9,6 +9,10 @@ import (
 
 const defaultError = "Error occurred processing request"
 
+type response struct {
+	Loc float64 `json:"loc"`
+}
+
 func (app *application) uploadDataHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	var input struct {
 		X   string `json:"x"`
@@ -24,21 +28,19 @@ func (app *application) uploadDataHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	var c data.Coordinate
-	err = c.Init(input.X, input.Y, input.Z)
-	if err != nil {
-		app.errorResponse(w, r, http.StatusBadRequest, err.Error())
+	error := c.Init(input.X, input.Y, input.Z)
+	if error != "" {
+		app.errorResponse(w, r, http.StatusBadRequest, error)
 		return
 	}
 
-	l, err := c.Getloc(input.Vel)
+	l, error := c.Getloc(input.Vel)
 	if err != nil {
-		app.errorResponse(w, r, http.StatusInternalServerError, err.Error())
+		app.errorResponse(w, r, http.StatusInternalServerError, error)
 		return
 	}
 
-	res := struct {
-		Loc float64 `json:"loc"`
-	}{
+	res := response{
 		Loc: l,
 	}
 	app.writeJSON(w, 200, res, nil)
