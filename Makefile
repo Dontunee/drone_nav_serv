@@ -9,3 +9,8 @@ help:
 .PHONY: run/api
 run/api:
 	go run ./cmd/api
+
+## test: runs all the tests
+.PHONY: test
+test:
+	go test ./...
