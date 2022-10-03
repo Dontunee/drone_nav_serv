@@ -15,7 +15,6 @@ WORKDIR /app
 # first copying go.mod and go.sum files and downloading them,
 # to be used every time we build the image if the dependencies
 # are not changed.
-
 # Copy go mod and sum files
 COPY go.mod ./
 COPY go.sum ./
@@ -23,21 +22,14 @@ COPY go.sum ./
 # Download all dependencies.
 RUN go mod download
 
-# Now, copy the source code
+# copy source code
 COPY . .
 
-# Note here: CGO_ENABLED is disabled for cross system compilation
-# It is also a common best practise.
 
 # Build the application.
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./bin/main .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./cmd/api
 
-# Finally our multi-stage to build a small image
-# Start a new stage from scratch
-FROM scratch
-
-# Copy the Pre-built binary file
-COPY --from=builder /app/bin/main .
 
 # Run executable
-CMD ["./cmd/main"]
+CMD ["./cmd/api"]
+
