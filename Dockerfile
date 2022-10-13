@@ -10,14 +10,9 @@ RUN apk update && apk add --no-cache git
 # Set current working directory
 WORKDIR /app
 
-# Note here: To avoid downloading dependencies every time we
-# build image. Here, we are caching all the dependencies by
-# first copying go.mod and go.sum files and downloading them,
-# to be used every time we build the image if the dependencies
-# are not changed.
 # Copy go mod and sum files
-COPY go.mod ./
-COPY go.sum ./
+COPY go.mod .
+COPY go.sum .
 
 # Download all dependencies.
 RUN go mod download
@@ -25,11 +20,9 @@ RUN go mod download
 # copy source code
 COPY . .
 
-
 # Build the application.
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./cmd/api
 
-
 # Run executable
-CMD ["./cmd/api"]
+CMD ["./api"]
 
